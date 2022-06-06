@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="transaction">
+	<resultMap id="transactionResult" type="TransactionVO">
+		<result property="transno" column="TRANSNO" />
+		<result property="cardno" column="CARDNO" />
+		<result property="cancelno" column="CANCELNO" />
+		<result property="transdate" column="TRANSDATE" />
+		<result property="transtime" column="TRANSTIME" />
+		<result property="transplace" column="TRANSPLACE" />
+		<result property="transamount" column="TRANSAMOUNT" />
+		<result property="loc" column="LOC" />
+		<result property="DELBIT" column="DELBIT" />
+	</resultMap>
+
+	<select id="selectAllTransactionList"
+		resultMap="transactionResult">
+        <![CDATA[
+            SELECT * FROM Transaction
+        ]]>
+	</select>
+
+	<select id="selectTransactionList" parameterType="TransactionVO"
+		resultMap="transactionResult" resultType="TransactionVO">
+
+		SELECT TRANSNO, CARDNO,
+		TRANSDATE, TRANSTIME, TRANSPLACE,
+		TRANSAMOUNT, LOC, DELBIT FROM
+		TRANSACTION
+		WHERE TRANSNO = #{transno}
+
+	</select>
+
+	<insert id="insertTransaction" parameterType="TransactionVO">
+		INSERT INTO
+		TRANSACTION(CARDNO,TRANSNO,TRANSDATE,TRANSTIME,TRANSPLACE,TRANSAMOUNT,LOC,DELBIT,REG_T,REG_ID,MOD_T,MOD_ID)
+		VALUES(#{cardno},
+		to_char(sysdate,'YYYYMMDDHH24MISS')||LPAD(ts.NEXTVAL,10,'0'),
+		#{transdate},#{transtime},#{transplace},#{transamount},#{loc},
+		'N',to_char(sysdate,'YYYYMMDDHH24MISS'),'SYSTEM',
+		to_char(sysdate,'YYYYMMDDHH24MISS'),'SYSTEM')
+	</insert>
+
+	<delete id="deleteTransaction" parameterType="TransactionVO">
+		UPDATE TRANSACTION
+		SET CANCELNO
+		=to_char(sysdate,'YYYYMMDDHH24MISS')||LPAD(cs.NEXTVAL,10,'0'),
+		DELBIT =
+		'Y', MOD_T = to_char(sysdate,'YYYYMMDDHH24MISS'),
+		MOD_ID = 'MINHO'
+		WHERE TRANSNO = #{transno}
+	</delete>
+
+</mapper>
