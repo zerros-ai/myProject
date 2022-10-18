@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="account">
+	<resultMap id="accountResult" type="AccountVO">
+		<result property="accountno" column="ACCOUNTNO" />
+		<result property="accountmoney" column="ACCOUNTMONEY" />
+		<result property="interest" column="INTEREST" />
+		<result property="custno" column="CUSTNO" />
+		<result property="credrate" column="CREDRAT" />
+		<result property="DELBIT" column="DELBIT" />
+		<result property="REG_T" column="REG_T" />
+		<result property="REG_ID" column="REG_ID" />
+		<result property="MOD_T" column="MOD_T" />
+		<result property="MOD_ID" column="MOD_ID" />
+	</resultMap>
+
+	<select id="selectAllAccountList" resultMap="accountResult">
+        <![CDATA[
+            SELECT * FROM ACCOUNT
+        ]]>
+	</select>
+
+	<select id="selectAccountList" parameterType="AccountVO" resultMap="accountResult"
+		resultType="AccountVO">
+
+		SELECT ACCOUNTNO, ACCOUNTMONEY, INTEREST,CUSTNO, DELBIT FROM
+		ACCOUNT
+		WHERE ACCOUNTNO = #{accountno}
+
+	</select>
+
+	<insert id="insertAccount" parameterType="AccountVO">
+		insert into ACCOUNT
+		values(#{accountno},#{accountmoney},#{interest}::numeric,#{custno},
+		'N',to_char(sysdate,'YYYYMMDDHH24MISS'),'SYSTEM',
+		to_char(sysdate,'YYYYMMDDHH24MISS'),'SYSTEM')
+	</insert>
+
+	<delete id="deleteAccount" parameterType="AccountVO">
+		UPDATE ACCOUNT SET
+		DELBIT = 'Y', MOD_T =
+		to_char(sysdate,'YYYYMMDDHH24MISS'),
+		MOD_ID
+		='MINHO'
+		WHERE ACCOUNTNO = #{accountno}
+	</delete>
+	
+	<delete id="deleteAccountbycustno" parameterType="AccountVO">
+		UPDATE ACCOUNT SET
+		DELBIT = 'Y', MOD_T =
+		to_char(sysdate,'YYYYMMDDHH24MISS'),
+		MOD_ID
+		='MINHO'
+		WHERE CUSTNO = #{custno}
+	</delete>
+
+
+
+</mapper>

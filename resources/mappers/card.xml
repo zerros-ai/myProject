@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+      PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="card">
+	<resultMap id="cardResult" type="CardVO">
+		<result property="cardno" column="CARDNO" />
+		<result property="cardkind" column="CARDKIND" />
+		<result property="rmn" column="RMN" />
+		<result property="cardname" column="CARDNAME" />
+		<result property="exprday" column="EXPRDAY" />
+		<result property="pwd" column="PWD" />
+		<result property="lmtmoney" column="LMTMONEY" />
+		<result property="accountno" column="ACCOUNTNO" />
+		<result property="custno" column="CUSTNO" />
+		<result property="DELBIT" column="DELBIT" />
+	</resultMap>
+
+	<select id="selectAllCardList" resultMap="cardResult">
+        <![CDATA[
+            SELECT * FROM CARD 
+        ]]>
+	</select>
+
+	<select id="selectCardList" parameterType="CardVO" resultMap="cardResult"
+		resultType="CardVO">
+
+		SELECT CARDNO, CARDKIND, RMN, CARDNAME, EXPRDAY, PWD,
+		LMTMONEY, ACCOUNTNO, CUSTNO, DELBIT FROM
+		CARD
+		WHERE CARDNO = #{cardno}
+
+	</select>
+
+	<insert id="insertCard" parameterType="CardVO">
+		insert into CARD
+		values(#{cardno},#{cardkind},#{rmn},#{cardname},#{exprday},#{pwd},#{lmtmoney},#{accountno},#{custno},
+		'N',to_char(sysdate,'YYYYMMDDHH24MISS'),'SYSTEM',
+		to_char(sysdate,'YYYYMMDDHH24MISS'),'SYSTEM')
+	</insert>
+
+	<delete id="deleteCard" parameterType="CardVO">
+		UPDATE CARD SET DELBIT =
+		'Y', MOD_T = to_char(sysdate,'YYYYMMDDHH24MISS'),
+		MOD_ID ='MINHO'
+		WHERE
+		ACCOUNTNO =#{accountno}
+	</delete>
+	
+	<delete id="deleteCardbycustno" parameterType="CardVO">
+		UPDATE CARD SET DELBIT =
+		'Y', MOD_T = to_char(sysdate,'YYYYMMDDHH24MISS'),
+		MOD_ID ='MINHO'
+		WHERE
+		CUSTNO =#{custno}
+	</delete>
+
+</mapper>
